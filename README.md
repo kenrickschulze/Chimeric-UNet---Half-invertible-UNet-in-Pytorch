@@ -2,45 +2,53 @@
 
 
 
-## Testing
+## Usage
+### Construct the Chimeric U-Net
 
 ```python
 from torch.utils.data import DataLoader
 from segxai import WrapExp
 from unet_models import cUNet, UNetConfig
 
-if __name__ == "__main__":
-    # # construct the Chimeric Unet
-    model = cUNet(
-        model_config=UNetConfig.chimMax([2, 2, 2, 2]),
-        out_classes=...,
-        in_channels=...,
-        idwt=True,
-    )
+model = cUNet(
+    model_config=UNetConfig.chimMax([2, 2, 2, 2]),
+    out_classes=...,
+    in_channels=...,
+    idwt=True,
+)
+```
 
-    # train the model on your dataset...
+### Train model...
 
-    # load dataset
-    X: DataLoader = ...
+### Wrap model in XAI Wrapper
 
-    # wrap model in xai wrapper
-    model_xai = WrapExp(model, n_channels=...)
+``` python
+model_xai = WrapExp(model_trained, n_channels=...)
+```
 
-    # # create global embedding
-    embedding, emb_scores, X_coarse_grads, emb_labels, emb_idxs = model_xai.embedding(
-        X,
-        labels=...,
-        pval=...,
-        target_layer_idx=...,
-        return_scores=True,
-        return_vectorized=True,
-        return_valid_labels=True,
-        return_valid_idx=True,
-    )
+### To construct global embedding for your dataset X simply call...
+```python 
+embedding, emb_scores, X_coarse_grads, emb_labels, emb_idxs = model_xai.embedding(
+    X,
+    labels=...,
+    pval=...,
+    target_layer_idx=...,
+    return_scores=True,
+    return_vectorized=True,
+    return_valid_labels=True,
+    return_valid_idx=True,
+)
+```
 
-    # # create local saliency maps
-    # extract sample to analyse
-    x, _ = next(iter(X))
-    saliencyM = model_xai.salmap(x, target_cls=2, roi=...)
+### To create saliencies first extract target sample from DataLoader
+```python
+X: DataLoader = ...
+x, _ = next(iter(X))
+```
+
+
+### ... and then compute saliency map for target class at positions specified on roi.
+```python
+saliencyMap = model_xai.salmap(x, target_cls=2, roi=...)
 
 ```
