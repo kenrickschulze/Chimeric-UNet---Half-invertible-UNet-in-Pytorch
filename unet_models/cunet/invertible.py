@@ -6,8 +6,6 @@ import torch
 from .non_invertible import StandardBlock
 from .iunet.layers import StandardAdditiveCoupling
 
-# import and re-export the resampling layers for clarity
-# pylint: disable=unused-import
 from .iunet.layers import InvertibleDownsampling2D, InvertibleUpsampling2D
 
 

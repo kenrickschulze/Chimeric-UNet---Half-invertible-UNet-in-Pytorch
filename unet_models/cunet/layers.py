@@ -287,17 +287,8 @@ class Encoder(nn.Module):
         if self.boost:
             x = self.boost_channels(x)
         Z = []
-        for layer, skip_layer, zero_layer in zip_longest(self.layers, self.skip_layers, self.zero_out):
+        for layer in self.layer:
             x, z = layer(x)
-            # convolve here z if boosted
-            if self.boost:
-                z = skip_layer(z)
-            # set selected activations to 0
-            if self.zero_out:
-
-                with torch.no_grad():
-                    z[:, zero_layer] = 0
-
             Z.append(z)
             
         return Z

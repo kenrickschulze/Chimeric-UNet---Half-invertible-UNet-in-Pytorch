@@ -56,8 +56,6 @@ class DWTMultiUpsample(nn.Module):
             return self.last_output
         
     def inverse(self, x):
-        
-         # invert reshaping 
         if self.reorder:
             ind = np.array(range(x.shape[1])).reshape(4, int(x.shape[1]/4)).transpose().ravel()
             x = x[:,ind,...]
@@ -115,8 +113,6 @@ class DWTMultiDownsample(nn.Module):
 
 
     def forward(self, x):
- 
-        # reshape indicies
         if self.reorder:
             ind = np.array(range(x.shape[1])).reshape(4, int(x.shape[1]/4)).transpose().ravel()
             x = x[:,ind,...]
@@ -160,10 +156,3 @@ def stacked_block(block_op, depth: int, k_size, increase_channels=False):
 
     return stacked_block_op
 
-# def stacked_block(block_op, depth: int, k_size):
-#     """Returns function that stacks convolutional blocks"""
-
-#     def stacked_block_op(channels):
-#         return nn.Sequential(*[block_op(channels,k_size) for _ in range(depth)])
-
-#     return stacked_block_op

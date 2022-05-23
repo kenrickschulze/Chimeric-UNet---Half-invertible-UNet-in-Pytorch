@@ -26,7 +26,7 @@ model = cUNet(
 model_xai = WrapExp(model_trained, n_channels=...)
 ```
 
-### To construct global embedding for your dataset X simply call...
+### To construct a global embedding for your dataset X simply call...
 ```python 
 embedding, emb_scores, X_coarse_grads, emb_labels, emb_idxs = model_xai.embedding(
     X,
@@ -47,7 +47,7 @@ x, _ = next(iter(X))
 ```
 
 
-### ... and then compute saliency map for target class at positions specified on roi.
+### ... and then compute the saliency map for the target class at positions specified on roi.
 ```python
 saliencyMap = model_xai.salmap(x, target_cls=2, roi=...)
 

@@ -213,14 +213,14 @@ class WrapExp:
 
         return _unpack_tuple(ret)
 
-    def _embed(self, x, **kwargs) -> list:
-        """_summary_
-
+    def _embed(self, x:Union[List[np.array], np.array], **kwargs) -> list:
+        """
         Args:
-            x (_type_):  # has to be given as list [exp0,...] or exp0
-
-        Returns:
-            list: _description_
+            x (Union[List[np.array], np.array]): 
+            For multiple latent spaces, List containing the vectorized activations which are embedded,
+            each given as (S*C)xD.
+            For single embedding, only provide np.array as  (S*C)xD.
+     
         """
 
         x_copy = x.copy()

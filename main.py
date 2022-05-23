@@ -3,8 +3,7 @@ from segxai import WrapExp
 from unet_models import cUNet, UNetConfig
 
 if __name__ == "__main__":
-    # # load chimeric model
-    # construct the Chimeric Unet
+    # # construct the Chimeric Unet
     model = cUNet(
         model_config=UNetConfig.chimMax([2, 2, 2, 2]),
         out_classes=...,
