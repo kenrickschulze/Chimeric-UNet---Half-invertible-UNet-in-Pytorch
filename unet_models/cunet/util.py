@@ -2,6 +2,7 @@
 
 import torch
 from torch import nn
+# installed in environment
 from pytorch_wavelets import DWTForward, DWTInverse
 import numpy as np
 
