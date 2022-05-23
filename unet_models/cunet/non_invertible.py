@@ -14,13 +14,16 @@ class StandardBlock(nn.Module):
         super(StandardBlock, self).__init__()
 
         self.channels = channels
-        if out_channels is not None: self.out_channels = out_channels
-        else: self.out_channels = channels
-            
-        
-        self.conv = nn.Conv2d(channels, self.out_channels, k_size, padding=int(k_size//2), bias=False)
+        if out_channels is not None:
+            self.out_channels = out_channels
+        else:
+            self.out_channels = channels
+
+        self.conv = nn.Conv2d(
+            channels, self.out_channels, k_size, padding=int(k_size // 2), bias=False
+        )
         self.relu = nn.LeakyReLU(inplace=True)
-        norm_val = self.out_channels // 2 if self.out_channels%2 == 0 else 1
+        norm_val = self.out_channels // 2 if self.out_channels % 2 == 0 else 1
         self.norm = nn.GroupNorm(max(1, (norm_val)), self.out_channels, eps=1e-3)
 
     def forward(self, x):
@@ -48,13 +51,13 @@ class NonInvBlock(nn.Module):
 
         assert channels % 2 == 0, "channels must be multiple of 2"
         self.channels = channels
-        
+
         self.F2 = StandardBlock(channels, k_size, out_channels)
 
     def forward(self, x):
         return self.F2(x)
 
-    
+
 class NonInvDown(nn.Conv2d):
     """Non-invertible, learnable downsampling, implemented as convolution"""
 
@@ -62,8 +65,6 @@ class NonInvDown(nn.Conv2d):
         super(NonInvDown, self).__init__(
             channels, channels * 4, kernel_size=2, stride=2, bias=False
         )
-        
-
 
 
 class NonInvUp(nn.ConvTranspose2d):
@@ -74,7 +75,7 @@ class NonInvUp(nn.ConvTranspose2d):
             channels, channels // 4, kernel_size=2, stride=2, bias=False
         )
 
+
 class MaxPool2d(nn.MaxPool2d):
-    
     def __init__(self, channels=None):
         super(MaxPool2d, self).__init__(kernel_size=2, stride=2)

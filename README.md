@@ -6,6 +6,10 @@ This repository contains the code to construct a Chimeric U-Net and to perform t
 ![Alt text](CNet-1.png?raw=true)
 
 ## Usage
+### Use the provided conda enviroment
+conda env create -n ENVNAME --file enviorement.ym
+conda create ENVNAME
+
 ### Construct the Chimeric U-Net
 
 ```python
