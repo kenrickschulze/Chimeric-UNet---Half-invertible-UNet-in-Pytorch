@@ -26,9 +26,9 @@ model = cUNet(
 )
 ```
 
-### Train model...
+### Train the model...
 
-### Wrap model in XAI Wrapper
+### Wrap the  model into the XAI Wrapper
 
 ``` python
 model_xai = WrapExp(model_trained, n_channels=...)
