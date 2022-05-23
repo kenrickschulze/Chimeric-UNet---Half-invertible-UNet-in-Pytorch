@@ -7,9 +7,10 @@ This repository contains the code to construct a Chimeric U-Net and to perform t
 
 ## Usage
 ### Use the provided conda enviroment
+```
 conda env create -n ENVNAME --file environment.yml \
 conda create ENVNAME
-
+```
 ### Construct the Chimeric U-Net
 
 ```python
