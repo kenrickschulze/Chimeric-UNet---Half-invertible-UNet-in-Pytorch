@@ -1,4 +1,4 @@
-# Chimeric UNet - Half invertible UNet in pytorch
+# Chimeric UNet - Half invertible UNet in Pytorch
 
 
 

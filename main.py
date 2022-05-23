@@ -18,7 +18,7 @@ if __name__ == "__main__":
     X: DataLoader = ...
 
     # wrap model in xai wrapper
-    model_xai = WrapExp(model, n_channels=-1)
+    model_xai = WrapExp(model, n_channels=...)
 
     # # create global embedding
     embedding, emb_scores, X_coarse_grads, emb_labels, emb_idxs = model_xai.embedding(
