@@ -1,7 +1,8 @@
 # Chimeric UNet - Half invertible UNet in Pytorch
 ## Description
-This repository contains the code to construct a Chimeric U-Net and to perform XAI analysis for a given model and dataset X. The Chimeric U-Net is a deep learning segmentation architecute with decisions process can be explained, due to its invertible Decoder. For details see (REF TO PAPER).
+This repository contains the code to construct a Chimeric U-Net and to perform XAI analysis for a given model and dataset X. The Chimeric U-Net is a deep learning segmentation architecture with a non-invertible Encoder and an invertible Decoder with build-in explainability. For details see (REF TO PAPER).
 
+Chimeric U-Net Schematic:
 ![Alt text](CNet-1.png?raw=true)
 
 ## Usage
