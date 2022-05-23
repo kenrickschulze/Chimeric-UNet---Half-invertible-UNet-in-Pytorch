@@ -1,6 +1,6 @@
 # Chimeric UNet - Half invertible UNet in Pytorch
 
-
+![Alt text](CNet.pdf?raw=true "Title")
 
 ## Usage
 ### Construct the Chimeric U-Net
