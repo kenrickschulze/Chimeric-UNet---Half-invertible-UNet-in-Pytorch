@@ -4,7 +4,7 @@
 
 ## Testing
 
-```
+```python
 from torch.utils.data import DataLoader
 from segxai import WrapExp
 from unet_models import cUNet, UNetConfig
