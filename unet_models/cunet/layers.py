@@ -121,7 +121,6 @@ class UpLayerWoConcat(nn.Module):
         return x
 
 
-
 class UpLayer(nn.Module):
     """
     Layer in the decoding path.
@@ -181,6 +180,7 @@ class UpLayer(nn.Module):
 
         return x, z
 
+
 class Encoder(nn.Module):
     """
     Encoder part of an U-Net.
@@ -188,8 +188,7 @@ class Encoder(nn.Module):
     using the same architecture.
     """
 
-    def __init__(self, channels: int, architecture, block_op, down_op, k_size: int, boost: int = None,
-                 zero_out: list = [], act_swap_mode: str = None, value: int = 0, relu_skips: bool = False):
+    def __init__(self, channels: int, architecture, block_op, down_op, k_size: int):
         """
         Build U-Net encoder
 
@@ -201,8 +200,6 @@ class Encoder(nn.Module):
         :param down_op: Callable returning downsample operation
         """
         super().__init__()
-
-        self.relu_skips: bool = relu_skips
 
         self.architecture = architecture
         self.depth = len(architecture) - 1
@@ -216,12 +213,6 @@ class Encoder(nn.Module):
         # store out channels
         self.out_channels = []
         self.skip_channels = []
-        self.boost = boost
-        # has to be list for zip longest
-        self.zero_out = zero_out if zero_out else []
-        self.act_swap_mode = act_swap_mode
-        self.value = value
-
 
         # for colvolving out channels --> skip size == channels // 2 --> true channels* i // 2
         self.skip_layers = nn.ModuleList()
@@ -233,9 +224,10 @@ class Encoder(nn.Module):
                 layer = DownLayer(
                     self.down_channels[-1],
                     block_op=stacked_block(
-                        block_op, n_blocks, k_size, increase_channels=True),
+                        block_op, n_blocks, k_size, increase_channels=True
+                    ),
                     down_op=down_op,
-                    bidx=bidx
+                    bidx=bidx,
                 )
 
             else:
@@ -243,24 +235,19 @@ class Encoder(nn.Module):
                     self.down_channels[-1],
                     block_op=stacked_block(block_op, n_blocks, k_size),
                     down_op=down_op,
-                    bidx=bidx
+                    bidx=bidx,
                 )
 
             self.down_channels.append(layer.out_channels)
             self.out_channels.append(layer.skip_channels)
 
-            if boost:
-                self.skip_layers.append(
-                    nn.Conv2d(layer.skip_channels, self.skip_channels[-1], kernel_size=1))
-                self.skip_channels.append(self.skip_channels[-1]*2)
             self.layers.append(layer)
 
         incr_ch = True if down_op == MaxPool2d else False
 
         self.last = stacked_block(
-            block_op, architecture[-1], k_size, increase_channels=incr_ch)(self.down_channels[-1])
-
-
+            block_op, architecture[-1], k_size, increase_channels=incr_ch
+        )(self.down_channels[-1])
 
     def forward(self, x):
         codes = []
@@ -284,13 +271,11 @@ class Encoder(nn.Module):
         return x
 
     def iter_fw_activations(self, x):
-        if self.boost:
-            x = self.boost_channels(x)
         Z = []
-        for layer in self.layer:
+        for layer in self.layers:
             x, z = layer(x)
             Z.append(z)
-            
+
         return Z
 
     def iter_activations(self, x):
@@ -333,7 +318,7 @@ class Decoder(nn.Module):
         self._reverse_arch = architecture[-2::-1]
 
         self.channels = channels
-        in_channels = channels * 2 ** self.depth
+        in_channels = channels * 2**self.depth
         self._rev_in_channels = [in_channels]
         self.up_channels = [in_channels]
 
@@ -390,15 +375,17 @@ class Decoder(nn.Module):
 
 
 class StandardUnetBlock(nn.Module):
-    def __init__(self,
-                 dim,
-                 num_in_channels,
-                 num_out_channels,
-                 depth=1,
-                 k_size=3,
-                 zero_init=False,
-                 normalization="group",
-                 **kwargs):
+    def __init__(
+        self,
+        dim,
+        num_in_channels,
+        num_out_channels,
+        depth=1,
+        k_size=3,
+        zero_init=False,
+        normalization="group",
+        **kwargs
+    ):
         super(StandardUnetBlock, self).__init__()
 
         conv_op = [nn.Conv1d, nn.Conv2d, nn.Conv3d][dim - 1]
@@ -413,7 +400,7 @@ class StandardUnetBlock(nn.Module):
             current_out_channels = max(num_in_channels, num_out_channels)
             if i == 0:
                 current_in_channels = num_in_channels
-            if i == depth-1:
+            if i == depth - 1:
                 current_out_channels = num_out_channels
 
             self.seq.append(
@@ -421,26 +408,27 @@ class StandardUnetBlock(nn.Module):
                     current_in_channels,
                     current_out_channels,
                     kernel_size=k_size,
-                    padding=k_size//2,
-                    bias=True))
+                    padding=k_size // 2,
+                    bias=True,
+                )
+            )
 
             if normalization == "instance":
-                norm_op = [nn.InstanceNorm1d,
-                           nn.InstanceNorm2d,
-                           nn.InstanceNorm3d][dim - 1]
+                norm_op = [nn.InstanceNorm1d, nn.InstanceNorm2d, nn.InstanceNorm3d][
+                    dim - 1
+                ]
                 self.seq.append(norm_op(current_out_channels, affine=True))
 
             elif normalization == "group":
-                norm_val = current_out_channels // 2 if current_out_channels % 2 == 0 else 1
+                norm_val = (
+                    current_out_channels // 2 if current_out_channels % 2 == 0 else 1
+                )
                 self.seq.append(
-                    nn.GroupNorm(max(1, (norm_val)),
-                                 current_out_channels, eps=1e-3)
+                    nn.GroupNorm(max(1, (norm_val)), current_out_channels, eps=1e-3)
                 )
 
             elif normalization == "batch":
-                norm_op = [nn.BatchNorm1d,
-                           nn.BatchNorm2d,
-                           nn.BatchNorm3d][dim - 1]
+                norm_op = [nn.BatchNorm1d, nn.BatchNorm2d, nn.BatchNorm3d][dim - 1]
                 self.seq.append(norm_op(current_out_channels, eps=1e-3))
 
             else:

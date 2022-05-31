@@ -107,7 +107,6 @@ class cUNet(nn.Module):
         out_classes: int,
         in_channels: int,
         k_size: int = 3,
-        boost: int = None,
         idwt: bool = False,
         *args,
         **kwargs
@@ -148,8 +147,7 @@ class cUNet(nn.Module):
             architecture=self.architecture,
             block_op=model_config.encoder_block,
             down_op=model_config.down,
-            k_size=k_size,
-            boost=boost,
+            k_size=k_size
         )
 
         self.decoder = Decoder(
