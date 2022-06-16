@@ -86,7 +86,7 @@ class WrapExp:
             num_der = torch.zeros_like(z_y)
 
             if roi == "predicted":
-                roi = torch.where(out_fw_pred == target_cls)
+                roi = zip(*torch.where(out_fw_pred == target_cls))
 
             for x, y in roi:
                 weight = out_fw_soft[target_cls, x, y].item()
@@ -320,7 +320,7 @@ class WrapExp:
             # if perturb value (pval) of type int: add it to channel c, where model predicted c on pixellvl
             if isinstance(pval, int):
                 # -2 for 2 spatial dimensions (HxW)
-                mask = (out.argmax(1) == c)[-2:]
+                mask = (out[0].argmax(0) == c)
                 out[0, c, mask] += pval
 
             elif isinstance(pval, float):

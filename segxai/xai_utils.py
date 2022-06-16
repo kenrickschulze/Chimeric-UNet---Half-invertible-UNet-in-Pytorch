@@ -108,7 +108,6 @@ def sequpsamp(gradients:np.array, feature_maps:List[np.array]):
 
     # for the last layer simple upsampling is performed
     for step in range(len(feature_maps)-1):
-        print(gradients.shape, feature_maps[len(feature_maps) - 2 - step].shape )
         gradients = rescale(gradients, 2) * feature_maps[len(feature_maps) - 2 - step]
         
     ret = rescale(gradients, 2)
