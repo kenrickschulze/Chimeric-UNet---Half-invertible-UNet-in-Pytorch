@@ -134,6 +134,7 @@ class cUNet(nn.Module):
 
         else:
             print("... used invertible upsampling and additive couplings")
+            assert out_classes % 2 == 0, "... only implemented for out_classes divisible by 2"
             self.down = UpLayerWoConcat(
                 out_classes * 4,
                 stacked_block(model_config.decoder_block, 2, k_size),
