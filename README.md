@@ -1,6 +1,6 @@
 # Chimeric UNet - Half invertible UNet in Pytorch
 ## Description
-This repository contains the code to construct a Chimeric U-Net and to perform the XAI analysis for a given dataset X. The Chimeric U-Net is a deep learning segmentation architecture with a non-invertible Encoder and an invertible Decoder with build-in explainability. For details see (REF TO PAPER).
+This repository contains the code to construct a Chimeric U-Net and to perform the XAI analysis for a given dataset X. The Chimeric U-Net is a deep learning segmentation architecture with a non-invertible Encoder and an invertible Decoder with build-in explainability. For details see [bioRxiv](https://www.biorxiv.org/content/10.1101/2022.12.01.518699v1).
 
 ## Chimeric U-Net Schematic:
 ![Alt text](CNet-1.png?raw=true)
@@ -55,7 +55,7 @@ x, _ = next(iter(X))
 ```
 
 
-### ... and then compute the saliency map for the target class at positions specified on roi.
+### ... and then compute the saliency map for the target class at positions specified in the roi.
 ```python
 saliencyMap = model_xai.salmap(x, target_cls=2, roi=...)
 

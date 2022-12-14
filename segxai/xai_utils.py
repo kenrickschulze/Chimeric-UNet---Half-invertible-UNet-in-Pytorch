@@ -2,6 +2,7 @@ from socket import if_indextoname
 import numpy as np
 import torch
 from typing import List
+import functools
 # https://github.com/linhaoqi027/SEG-GRAD-CAM/blob/master/gradcam_unet.py
 
 
@@ -14,8 +15,8 @@ class FeatureExtractor:
         self.target_layer = target_layer
 
     def get_activation(self, name):
-        def hook(model, input, output):
-            self.target_activation = output
+        def hook(model, inp, output):
+            self.target_activation = inp
 
         return hook
 
@@ -58,7 +59,6 @@ class ModelOutputs:
         target_activations, x = self.feature_extractor(x)
 
         return target_activations, x
-
 
 def normalize(x: np.array) -> np.array:
     return (x - x.min()) / (x.max() - x.min())
