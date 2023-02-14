@@ -104,7 +104,7 @@ class WrapExp:
                     # pull_back
                     z_delta_yc = self._pull_back(fw_copy)[-1][0, :, :, :]
 
-                    grad_fstord = -(z_y - z_delta_yc)
+                    grad_fstord = z_y - z_delta_yc
                     approx_steps.append(grad_fstord)
 
                 num_der += self.gradients_fine(approx_steps, h_prime, weight)
