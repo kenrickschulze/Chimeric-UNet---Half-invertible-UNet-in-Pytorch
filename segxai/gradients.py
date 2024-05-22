@@ -282,7 +282,7 @@ class WrapExp:
                 for lidx, label in enumerate(labels):
                     # compute coarse gradient approximation
                     if label in predicted_labels:
-                        z_delta_yc = self._pull_back(out_fw_lgts, label, pval)[tgl][
+                        z_delta_yc = self._pull_back(out_fw_lgts, int(label), pval)[tgl][
                             0, :, :, :
                         ]
                         corase_grad = z_y - z_delta_yc
@@ -331,7 +331,8 @@ class WrapExp:
 
     def _vectorize_sample(self, x, n_positives: int = None, fill_val=np.nan):
         if isinstance(x, tuple):
-            x = np.full(x[0], fill_val)
+            vectorized = np.full(x[0], fill_val)
+            
         else:
             x = x.numpy()
             n_channsels, h, w = x.shape
@@ -344,11 +345,12 @@ class WrapExp:
                 axis=1,
             )
 
-            return vectorized
+        return vectorized
 
     @staticmethod
     def _kthMax_alongAxis1d(x, k: int):
-        return x[np.arange(x.shape[0]), np.argsort(x)[:, -k]]
+        x_copy = np.copy(x)
+        return x_copy[np.arange(x.shape[0]), np.argsort(x)[:, -k]]
 
     @staticmethod
     def _flatten_vectorized(x: np.array) -> np.array:
